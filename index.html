@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio Firdaus J. Arifin - Mahasiswa Sistem Informasi Semester 5, Universitas Pamulang Kampus Serang. GPA 3.92.">
+  <meta name="author" content="Firdaus J. Arifin">
+  <meta name="theme-color" content="#0f0f1e">
+  
+  <meta property="og:title" content="Firdaus J. Arifin - Mahasiswa Sistem Informasi">
+  <meta property="og:description" content="Semester 5 | GPA 3.92 | Universitas Pamulang Kampus Serang">
+  <meta property="og:type" content="website">
+  
+  <title>🎮 Firdaus J. Arifin | Mahasiswa Sistem Informasi</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <h1 class="glitch" data-text="LOADING...">LOADING...</h1>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <p class="blink">&gt; LOADING FIRDAUS_SAVE.dat ...</p>
+    </div>
+  </div>
+
+  <div class="cursor" id="cursor"></div>
+
+  <!-- NAVBAR -->
+  <header class="navbar" id="navbar">
+    <nav class="nav-container">
+      <a href="#home" class="logo">
+        <span class="logo-icon">▶</span> FIRDAUS_J.A
+      </a>
+      
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#home" class="nav-link active">HOME</a></li>
+        <li><a href="#about" class="nav-link">ABOUT</a></li>
+        <li><a href="#skills" class="nav-link">SKILLS</a></li>
+        <li><a href="#projects" class="nav-link">PROJECTS</a></li>
+        <li><a href="#contact" class="nav-link">CONTACT</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="themeToggle" class="btn-icon" aria-label="Toggle theme">🌙</button>
+        <button id="soundToggle" class="btn-icon" aria-label="Toggle sound">🔊</button>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section id="home" class="hero">
+      <canvas id="gameCanvas"></canvas>
+      
+      <div class="hero-content">
+        <div class="hero-text">
+          <p class="hero-greeting blink-slow">&gt; PRESS START TO CONTINUE</p>
+          <h1 class="hero-title">
+            HAI, SAYA <span class="neon-text">FIRDAUS J. ARIFIN</span>
+          </h1>
+          <p class="hero-subtitle">
+            <span id="typingText"></span><span class="cursor-blink">_</span>
+          </p>
+          <div class="hero-buttons">
+            <a href="#projects" class="btn btn-primary">
+              <span>▶ LIHAT PROJECT</span>
+            </a>
+            <a href="#contact" class="btn btn-secondary">
+              <span>✉ HUBUNGI SAYA</span>
+            </a>
+          </div>
+          
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-num" data-count="5">0</span>
+              <span class="stat-label">Semester</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num" data-count="392" data-divide="100">0.00</span>
+              <span class="stat-label">GPA</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num" data-count="3">0</span>+
+              <span class="stat-label">Projects</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HERO AVATAR: FOTO PRIBADI + MAGE PET -->
+        <div class="hero-avatar">
+          <!-- Foto Pribadi (Hero) -->
+          <div class="avatar-frame">
+            <img src="assets/images/avatar.png" 
+                 alt="Firdaus J. Arifin" 
+                 class="pixel-avatar-main"
+                 onerror="this.parentElement.innerHTML='<div class=&quot;avatar-fallback&quot;>👨‍💻</div>'">
+          </div>
+          
+          <div class="avatar-platform"></div>
+          
+          <!-- Mage Pet (Dekoratif) -->
+          <div class="pet-mage" id="petMage" title="Klik aku! 🔥">
+            <div class="pet-mage-sprite" id="mageSprite" data-direction="front"></div>
+            <div class="pet-fire-sprite" id="fireSprite"></div>
+          </div>
+          
+          <!-- Score Counter -->
+          <div class="pet-score">
+            <span>SPELLS:</span>
+            <span class="score-value" id="scoreValue">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-indicator">
+        <span>SCROLL</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section">
+      <h2 class="section-title">
+        <span class="pixel-border">👤</span> ABOUT ME
+      </h2>
+      
+      <div class="about-grid">
+        <div class="about-card">
+          <h3>&gt; PLAYER_INFO</h3>
+          <ul class="player-info">
+            <li><span>NAMA:</span> Firdaus J. Arifin</li>
+            <li><span>ROLE:</span> Mahasiswa SI</li>
+            <li><span>LEVEL:</span> Semester 5</li>
+            <li><span>GUILD:</span> Sistem Informasi</li>
+            <li><span>GPA:</span> <span class="gpa-highlight">3.92 / 4.00</span></li>
+            <li><span>CAMPUS:</span> Universitas Pamulang</li>
+            <li><span>REGION:</span> Kampus Serang</li>
+            <li><span>STATUS:</span> <span class="online">● ACTIVE</span></li>
+          </ul>
+        </div>
+
+        <div class="about-card">
+          <h3>&gt; ACADEMIC_STATS</h3>
+          <div class="stat-bar">
+            <label>Pemrograman Web</label>
+            <div class="bar"><div class="fill" data-width="95"></div></div>
+          </div>
+          <div class="stat-bar">
+            <label>Basis Data</label>
+            <div class="bar"><div class="fill" data-width="92"></div></div>
+          </div>
+          <div class="stat-bar">
+            <label>Analisis Sistem</label>
+            <div class="bar"><div class="fill" data-width="90"></div></div>
+          </div>
+          <div class="stat-bar">
+            <label>UI/UX Design</label>
+            <div class="bar"><div class="fill" data-width="88"></div></div>
+          </div>
+          <div class="stat-bar">
+            <label>Manajemen Proyek</label>
+            <div class="bar"><div class="fill" data-width="85"></div></div>
+          </div>
+        </div>
+
+        <div class="about-card full-width">
+          <h3>&gt; BIOGRAFI</h3>
+          <p>
+            Halo! Saya <strong>Firdaus J. Arifin</strong>, mahasiswa 
+            <strong>Sistem Informasi Semester 5</strong> di 
+            <strong>Universitas Pamulang Kampus Serang</strong> dengan 
+            <strong>IPK 3.92/4.00</strong>. Saya tumbuh besar dengan game 8-bit klasik 
+            seperti Pokemon Series, Final Fantasy, dan Zelda — dan sampai sekarang, 
+            estetika pixel art masih jadi inspirasi utama dalam setiap project saya.
+          </p>
+          <p>
+            Saat ini saya sedang fokus mendalami <strong>Web Development</strong>, 
+            <strong>Basis Data</strong>, dan <strong>Analisis Sistem Informasi</strong>, 
+            sambil aktif mengerjakan project kuliah & personal.
+          </p>
+          <p class="bio-quote"><em>"Speak. Share. Improve."</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section">
+      <h2 class="section-title">
+        <span class="pixel-border">⚔</span> SKILLS
+      </h2>
+      
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-icon">🎨</div>
+          <h3>Frontend Dev</h3>
+          <p>HTML5, CSS3, JavaScript</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">⚙</div>
+          <h3>Backend Dev</h3>
+          <p>Node.js, PHP, Python</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🗄</div>
+          <h3>Database</h3>
+          <p>MySQL, MongoDB, Firebase</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">📊</div>
+          <h3>Analisis Sistem</h3>
+          <p>UML, ERD, BPMN, SDLC</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">📱</div>
+          <h3>Mobile Dev</h3>
+          <p>Android, Flutter, Kotlin</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🎮</div>
+          <h3>Game Dev</h3>
+          <p>Unity, Aseprite, Pixel Art</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🎵</div>
+          <h3>Chiptune Audio</h3>
+          <p>PSG, FamiTracker, Web Audio API</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🎓</div>
+          <h3>Akuntansi Sistem</h3>
+          <p>Simulasi transaksi, Pencatatan keuangan</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section">
+      <h2 class="section-title">
+        <span class="pixel-border">🎮</span> PROJECTS
+      </h2>
+      
+      <div class="projects-grid">
+        
+        <!-- VOKA -->
+        <article class="project-card mobile-project">
+          <div class="project-image-portrait">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <img src="assets/images/voka.png" alt="VOKA"
+                   onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>📢</div>'">
+            </div>
+          </div>
+          <div class="project-info-portrait">
+            <h3>📢 VOKA</h3>
+            <p class="project-tagline">"Speak. Share. Improve."</p>
+            <p>
+              <strong>Voice of Kampus Aspirations</strong> — Sistem Informasi 
+              Aspirasi, Saran, dan Keluhan Mahasiswa berbasis Mobile (Android).
+            </p>
+            <div class="tags">
+              <span>Android</span>
+              <span>Mobile Dev</span>
+              <span>Sistem Informasi</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- StoreLab -->
+        <article class="project-card mobile-project">
+          <div class="project-image-portrait">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <img src="assets/images/storelab.png" alt="StoreLab"
+                   onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>🏪</div>'">
+            </div>
+          </div>
+          <div class="project-info-portrait">
+            <h3>🏪 StoreLab</h3>
+            <p class="project-tagline">Belajar bisnis lewat simulasi interaktif</p>
+            <p>
+              Aplikasi pembelajaran akuntansi berbasis simulasi interaktif 
+              untuk siswa dan mahasiswa.
+            </p>
+            <div class="tags">
+              <span>Akuntansi</span>
+              <span>Simulasi</span>
+              <span>EdTech</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- NeracaLab -->
+        <article class="project-card mobile-project">
+          <div class="project-image-portrait">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <img src="assets/images/neracalab.png" alt="NeracaLab"
+                   onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>📊</div>'">
+            </div>
+          </div>
+          <div class="project-info-portrait">
+            <h3>📊 NeracaLab</h3>
+            <p class="project-tagline">"Belajar Akuntansi Melalui Simulasi Bisnis Nyata."</p>
+            <p>
+              Aplikasi simulasi pembelajaran akuntansi untuk siswa, mahasiswa, 
+              dan tenaga pendidik.
+            </p>
+            <div class="tags">
+              <span>Akuntansi</span>
+              <span>Simulasi Bisnis</span>
+              <span>EdTech</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <h2 class="section-title">
+        <span class="pixel-border">📡</span> CONNECT
+      </h2>
+      
+      <p class="contact-intro">&gt; PILIH CHANNEL KOMUNIKASI:</p>
+      
+      <div class="social-grid">
+        <a href="https://github.com/frdsjhnarfn" target="_blank" rel="noopener" class="social-card github">
+          <span class="social-icon">🐙</span>
+          <span class="social-name">GitHub</span>
+        </a>
+        <a href="https://linkedin.com/in/frdsjhnarfn" target="_blank" rel="noopener" class="social-card linkedin">
+          <span class="social-icon">💼</span>
+          <span class="social-name">LinkedIn</span>
+        </a>
+        <a href="https://twitter.com/frdsjhnarifin" target="_blank" rel="noopener" class="social-card twitter">
+          <span class="social-icon">🐦</span>
+          <span class="social-name">Twitter</span>
+        </a>
+        <a href="https://instagram.com/frdsjhnarfn" target="_blank" rel="noopener" class="social-card instagram">
+          <span class="social-icon">📷</span>
+          <span class="social-name">Instagram</span>
+        </a>
+        <a href="https://youtube.com/@frdsjhnarfn" target="_blank" rel="noopener" class="social-card youtube">
+          <span class="social-icon">▶</span>
+          <span class="social-name">YouTube</span>
+        </a>
+        <a href="mailto:firdausjihanarifin11@gmail.com" class="social-card email">
+          <span class="social-icon">✉</span>
+          <span class="social-name">Email</span>
+          <span class="social-user">kirim pesan</span>
+        </a>
+      </div>
+
+        <form class="contact-form" 
+        id="contactForm"
+        action="https://formspree.io/f/mwlkybkz" 
+        method="POST">
+        <h3>&gt; SEND MESSAGE</h3>
+
+        <!-- Form-level messages -->
+        <div data-fs-error class="form-error-global"></div>
+        <div data-fs-success class="form-success-global">✓ Pesan terkirim!</div>
+
+        <input type="text" name="name" placeholder="Nama" required data-fs-field>
+        <span data-fs-error="name" class="form-field-error"></span>
+
+        <input type="email" name="email" placeholder="Email" required data-fs-field>
+        <span data-fs-error="email" class="form-field-error"></span>
+
+        <textarea name="message" rows="5" placeholder="Pesan..." required data-fs-field></textarea>
+        <span data-fs-error="message" class="form-field-error"></span>
+
+        <button type="submit" class="btn btn-primary" data-fs-submit-btn>
+            <span>▶ KIRIM</span>
+        </button>
+        </form>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p class="blink-slow">&gt; SEMESTER 5 — STILL GRINDING XP!</p>
+      <p>© 2026 Firdaus J. Arifin · Universitas Pamulang Kampus Serang</p>
+      <p class="footer-hint">Tekan <kbd>↑↑↓↓←→←→BA</kbd> untuk easter egg 🥚</p>
+    </div>
+  </footer>
+
+  <audio id="bgm" loop>
+    <source src="assets/audio/bgm.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Formspree AJAX Library -->
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+  <script src="script.js"></script>
+</body>
+</html>
