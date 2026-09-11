@@ -96,8 +96,8 @@ function updateActiveLink() {
 const typingText = document.getElementById('typingText');
 const phrases = [
   '> Firdaus J. Arifin',
-  '> Mahasiswa Sistem Informasi',
-  '> Semester 5 | GPA 3.92',
+  '> Information Systems Student',
+  '> 5th Semester',
   '> Universitas Pamulang Serang',
   '> Web & Mobile Developer'
 ];
@@ -232,7 +232,6 @@ if (soundToggle && bgm) {
   });
 }
 
-/* ============ FORM SUBMIT ============ */
 /* ============ FORMSPREE AJAX INTEGRATION ============ */
 (function() {
   window.formspree = window.formspree || function() {
@@ -240,7 +239,7 @@ if (soundToggle && bgm) {
   };
   formspree('initForm', {
     formElement: '#contactForm',
-    formId: 'xldwpbko' // ⚠️ GANTI dengan Form ID kamu
+    formId: 'mwlkybkz' // ⚠️ Replace with YOUR Form ID
   });
 })();
 

@@ -673,14 +673,6 @@ body {
   animation: pulse 1.5s infinite;
 }
 
-.gpa-highlight {
-  color: var(--accent-2);
-  font-family: var(--font-pixel);
-  font-size: 0.85rem;
-  text-shadow: 0 0 10px var(--accent-2);
-  animation: pulse 2s infinite;
-}
-
 .bio-quote {
   margin-top: 1.5rem;
   padding: 1rem 1.5rem;
