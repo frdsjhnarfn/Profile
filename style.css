@@ -51,6 +51,52 @@ body {
   cursor: none;
 }
 
+/* ============ ANTI-SELECT TEXT ============ */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Pengecualian: input form tetap bisa di-select */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Hilangkan highlight biru saat tap di mobile */
+::selection {
+  background: transparent;
+  color: inherit;
+}
+
+::-moz-selection {
+  background: transparent;
+  color: inherit;
+}
+
+/* Cegah drag pada gambar */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+}
+
+/* Kecuali gambar di project card & avatar — tetap klik-able */
+.project-card img,
+.avatar-frame img,
+.phone-frame img {
+  pointer-events: auto;
+}
+
 /* ============ CUSTOM CURSOR ============ */
 .cursor {
   position: fixed;

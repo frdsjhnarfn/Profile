@@ -658,6 +658,228 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
+/* ==============================================
+   SKILLS SLIDER CONTROLLER
+   ============================================== */
+
+(function initSkillsSlider() {
+  const track = document.getElementById('skillsTrack');
+  const slider = document.getElementById('skillsSlider');
+  const prevBtn = document.getElementById('skillsPrev');
+  const nextBtn = document.getElementById('skillsNext');
+  const dotsContainer = document.getElementById('skillsDots');
+  
+  if (!track || !slider) return;
+  
+  const cards = track.querySelectorAll('.skill-card');
+  if (cards.length === 0) return;
+  
+  let currentIndex = 0;
+  let cardsPerView = getCardsPerView();
+  let maxIndex = Math.max(0, cards.length - cardsPerView);
+  
+  // Hitung berapa card per view berdasarkan lebar viewport
+  function getCardsPerView() {
+    const w = window.innerWidth;
+    if (w <= 600) return 1;
+    if (w <= 900) return 2;
+    return 3;
+  }
+  
+  // Hitung lebar 1 card + gap
+  function getCardWidth() {
+    const firstCard = cards[0];
+    const cardWidth = firstCard.offsetWidth;
+    const gap = parseFloat(getComputedStyle(track).gap) || 24;
+    return cardWidth + gap;
+  }
+  
+  // Geser track ke index tertentu
+  function goToSlide(index) {
+    currentIndex = Math.max(0, Math.min(index, maxIndex));
+    const offset = -currentIndex * getCardWidth();
+    track.style.transform = `translateX(${offset}px)`;
+    updateDots();
+    updateButtons();
+  }
+  
+  // Update tombol prev/next disabled state
+  function updateButtons() {
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex >= maxIndex;
+  }
+  
+  // Generate dots
+  function generateDots() {
+    if (!dotsContainer) return;
+    dotsContainer.innerHTML = '';
+    
+    const totalDots = maxIndex + 1;
+    for (let i = 0; i < totalDots; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'slider-dot' + (i === currentIndex ? ' active' : '');
+      dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      dot.addEventListener('click', () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+  }
+  
+  // Update active dot
+  function updateDots() {
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll('.slider-dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentIndex);
+    });
+  }
+  
+  // Tombol prev/next
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      goToSlide(currentIndex - 1);
+    });
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      goToSlide(currentIndex + 1);
+    });
+  }
+  
+  // ============ DRAG SUPPORT ============
+  let isDragging = false;
+  let startX = 0;
+  let startTranslate = 0;
+  let currentTranslate = 0;
+  let movedDistance = 0;
+  
+  function getCurrentTranslate() {
+    const style = window.getComputedStyle(track);
+    const matrix = new DOMMatrixReadOnly(style.transform);
+    return matrix.m41; // translateX value
+  }
+  
+  // Mouse events
+  slider.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.pageX;
+    startTranslate = getCurrentTranslate();
+    currentTranslate = startTranslate;
+    movedDistance = 0;
+    track.classList.add('dragging');
+    slider.style.cursor = 'grabbing';
+  });
+  
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const walk = e.pageX - startX;
+    movedDistance = Math.abs(walk);
+    currentTranslate = startTranslate + walk;
+    track.style.transform = `translateX(${currentTranslate}px)`;
+  });
+  
+  window.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    track.classList.remove('dragging');
+    slider.style.cursor = 'grab';
+    
+    // Snap ke slide terdekat
+    if (movedDistance > 5) {
+      const cardWidth = getCardWidth();
+      const movedCards = Math.round(-currentTranslate / cardWidth);
+      goToSlide(movedCards);
+    } else {
+      // Kalau cuma klik tanpa drag, snap balik
+      goToSlide(currentIndex);
+    }
+  });
+  
+  // ============ TOUCH SUPPORT ============
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTranslate = 0;
+  let isSwiping = false;
+  let touchMoved = 0;
+  
+  slider.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTranslate = getCurrentTranslate();
+    isSwiping = false;
+    touchMoved = 0;
+    track.classList.add('dragging');
+  }, { passive: true });
+  
+  slider.addEventListener('touchmove', (e) => {
+    const deltaX = e.touches[0].clientX - touchStartX;
+    const deltaY = e.touches[0].clientY - touchStartY;
+    
+    // Deteksi arah swipe (horizontal atau vertical)
+    if (!isSwiping && (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10)) {
+      isSwiping = Math.abs(deltaX) > Math.abs(deltaY);
+    }
+    
+    if (isSwiping) {
+      e.preventDefault();
+      touchMoved = Math.abs(deltaX);
+      const newTranslate = touchStartTranslate + deltaX;
+      track.style.transform = `translateX(${newTranslate}px)`;
+    }
+  }, { passive: false });
+  
+  slider.addEventListener('touchend', () => {
+    track.classList.remove('dragging');
+    
+    if (isSwiping && touchMoved > 10) {
+      const cardWidth = getCardWidth();
+      const currentTranslate = getCurrentTranslate();
+      const movedCards = Math.round(-currentTranslate / cardWidth);
+      goToSlide(movedCards);
+    } else {
+      goToSlide(currentIndex);
+    }
+    
+    isSwiping = false;
+  });
+  
+  // ============ KEYBOARD SUPPORT ============
+  slider.setAttribute('tabindex', '0');
+  slider.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      goToSlide(currentIndex - 1);
+    } else if (e.key === 'ArrowRight') {
+      goToSlide(currentIndex + 1);
+    }
+  });
+  
+  // ============ AUTO UPDATE ON RESIZE ============
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const newCardsPerView = getCardsPerView();
+      if (newCardsPerView !== cardsPerView) {
+        cardsPerView = newCardsPerView;
+        maxIndex = Math.max(0, cards.length - cardsPerView);
+        currentIndex = Math.min(currentIndex, maxIndex);
+        generateDots();
+        goToSlide(currentIndex);
+      } else {
+        // Refresh position karena card width mungkin berubah
+        goToSlide(currentIndex);
+      }
+    }, 150);
+  });
+  
+  // ============ INIT ============
+  generateDots();
+  goToSlide(0);
+  
+  console.log('✅ Skills slider initialized');
+})();
+
 /* ============ CONSOLE ============ */
 console.log('%c🎮 FIRDAUS J. ARIFIN - 8-BIT PORTFOLIO', 
   'color: #00f5d4; font-size: 20px; font-family: monospace; font-weight: bold;');
