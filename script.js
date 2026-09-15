@@ -659,7 +659,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 /* ==============================================
-   SKILLS SLIDER CONTROLLER
+   SKILLS SLIDER — 1 CARD PER VIEW + INFINITE LOOP
    ============================================== */
 
 (function initSkillsSlider() {
@@ -668,45 +668,89 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   const prevBtn = document.getElementById('skillsPrev');
   const nextBtn = document.getElementById('skillsNext');
   const dotsContainer = document.getElementById('skillsDots');
+  const currentNum = document.getElementById('skillCurrent');
+  const totalNum = document.getElementById('skillTotal');
   
   if (!track || !slider) return;
   
   const cards = track.querySelectorAll('.skill-card');
-  if (cards.length === 0) return;
+  const totalCards = cards.length;
+  if (totalCards === 0) return;
   
   let currentIndex = 0;
-  let cardsPerView = getCardsPerView();
-  let maxIndex = Math.max(0, cards.length - cardsPerView);
+  let isAnimating = false;
   
-  // Hitung berapa card per view berdasarkan lebar viewport
-  function getCardsPerView() {
-    const w = window.innerWidth;
-    if (w <= 600) return 1;
-    if (w <= 900) return 2;
-    return 3;
-  }
+  // Set total counter
+  if (totalNum) totalNum.textContent = totalCards;
   
-  // Hitung lebar 1 card + gap
+  // Hitung lebar 1 card (full width slider)
   function getCardWidth() {
-    const firstCard = cards[0];
-    const cardWidth = firstCard.offsetWidth;
-    const gap = parseFloat(getComputedStyle(track).gap) || 24;
-    return cardWidth + gap;
+    return slider.offsetWidth;
   }
   
-  // Geser track ke index tertentu
-  function goToSlide(index) {
-    currentIndex = Math.max(0, Math.min(index, maxIndex));
-    const offset = -currentIndex * getCardWidth();
+  // Update counter dan dots
+  function updateUI() {
+    if (currentNum) currentNum.textContent = currentIndex + 1;
+    
+    if (dotsContainer) {
+      const dots = dotsContainer.querySelectorAll('.slider-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+    }
+  }
+  
+  // Geser ke index tertentu (dengan animasi)
+  function goToSlide(index, animate = true) {
+    if (isAnimating && animate) return;
+    
+    const width = getCardWidth();
+    const offset = -index * width;
+    
+    if (animate) {
+      isAnimating = true;
+      track.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    } else {
+      track.style.transition = 'none';
+    }
+    
     track.style.transform = `translateX(${offset}px)`;
-    updateDots();
-    updateButtons();
+    
+    if (animate) {
+      setTimeout(() => {
+        isAnimating = false;
+      }, 500);
+    }
   }
   
-  // Update tombol prev/next disabled state
-  function updateButtons() {
-    if (prevBtn) prevBtn.disabled = currentIndex === 0;
-    if (nextBtn) nextBtn.disabled = currentIndex >= maxIndex;
+  // Next slide (dengan infinite loop)
+  function nextSlide() {
+    if (isAnimating) return;
+    
+    currentIndex++;
+    
+    if (currentIndex >= totalCards) {
+      // Loop ke awal
+      currentIndex = 0;
+    }
+    
+    goToSlide(currentIndex);
+    updateUI();
+  }
+  
+  // Prev slide (dengan infinite loop)
+  function prevSlide() {
+    if (isAnimating) return;
+    
+    currentIndex--;
+    
+    if (currentIndex < 0) {
+      // Loop ke akhir
+      currentIndex = totalCards - 1;
+    }
+    
+    goToSlide(currentIndex);
+    updateUI();
   }
   
   // Generate dots
@@ -714,62 +758,49 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     if (!dotsContainer) return;
     dotsContainer.innerHTML = '';
     
-    const totalDots = maxIndex + 1;
-    for (let i = 0; i < totalDots; i++) {
+    for (let i = 0; i < totalCards; i++) {
       const dot = document.createElement('button');
-      dot.className = 'slider-dot' + (i === currentIndex ? ' active' : '');
+      dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
       dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-      dot.addEventListener('click', () => goToSlide(i));
+      dot.addEventListener('click', () => {
+        if (isAnimating) return;
+        currentIndex = i;
+        goToSlide(i);
+        updateUI();
+      });
       dotsContainer.appendChild(dot);
     }
   }
   
-  // Update active dot
-  function updateDots() {
-    if (!dotsContainer) return;
-    const dots = dotsContainer.querySelectorAll('.slider-dot');
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === currentIndex);
-    });
-  }
+  // Button handlers
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
   
-  // Tombol prev/next
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      goToSlide(currentIndex - 1);
-    });
-  }
-  
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      goToSlide(currentIndex + 1);
-    });
-  }
-  
-  // ============ DRAG SUPPORT ============
+  /* ============ DRAG SUPPORT ============ */
   let isDragging = false;
   let startX = 0;
-  let startTranslate = 0;
   let currentTranslate = 0;
+  let startTranslate = 0;
   let movedDistance = 0;
   
   function getCurrentTranslate() {
     const style = window.getComputedStyle(track);
     const matrix = new DOMMatrixReadOnly(style.transform);
-    return matrix.m41; // translateX value
+    return matrix.m41;
   }
   
-  // Mouse events
+  // Mouse down
   slider.addEventListener('mousedown', (e) => {
+    if (isAnimating) return;
     isDragging = true;
     startX = e.pageX;
     startTranslate = getCurrentTranslate();
-    currentTranslate = startTranslate;
     movedDistance = 0;
     track.classList.add('dragging');
     slider.style.cursor = 'grabbing';
   });
   
+  // Mouse move
   window.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     e.preventDefault();
@@ -779,24 +810,36 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     track.style.transform = `translateX(${currentTranslate}px)`;
   });
   
-  window.addEventListener('mouseup', () => {
+  // Mouse up
+  window.addEventListener('mouseup', (e) => {
     if (!isDragging) return;
     isDragging = false;
     track.classList.remove('dragging');
     slider.style.cursor = 'grab';
     
-    // Snap ke slide terdekat
+    const width = getCardWidth();
+    const threshold = width * 0.2; // 20% threshold untuk swipe
+    
     if (movedDistance > 5) {
-      const cardWidth = getCardWidth();
-      const movedCards = Math.round(-currentTranslate / cardWidth);
-      goToSlide(movedCards);
+      const walk = e.pageX - startX;
+      
+      if (walk < -threshold) {
+        // Swipe kiri → next
+        nextSlide();
+      } else if (walk > threshold) {
+        // Swipe kanan → prev
+        prevSlide();
+      } else {
+        // Tidak cukup jauh → snap balik
+        goToSlide(currentIndex);
+      }
     } else {
-      // Kalau cuma klik tanpa drag, snap balik
+      // Cuma klik → snap balik
       goToSlide(currentIndex);
     }
   });
   
-  // ============ TOUCH SUPPORT ============
+  /* ============ TOUCH SUPPORT ============ */
   let touchStartX = 0;
   let touchStartY = 0;
   let touchStartTranslate = 0;
@@ -804,6 +847,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   let touchMoved = 0;
   
   slider.addEventListener('touchstart', (e) => {
+    if (isAnimating) return;
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
     touchStartTranslate = getCurrentTranslate();
@@ -816,7 +860,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     const deltaX = e.touches[0].clientX - touchStartX;
     const deltaY = e.touches[0].clientY - touchStartY;
     
-    // Deteksi arah swipe (horizontal atau vertical)
+    // Deteksi arah swipe
     if (!isSwiping && (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10)) {
       isSwiping = Math.abs(deltaX) > Math.abs(deltaY);
     }
@@ -829,14 +873,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   }, { passive: false });
   
-  slider.addEventListener('touchend', () => {
+  slider.addEventListener('touchend', (e) => {
     track.classList.remove('dragging');
     
     if (isSwiping && touchMoved > 10) {
-      const cardWidth = getCardWidth();
-      const currentTranslate = getCurrentTranslate();
-      const movedCards = Math.round(-currentTranslate / cardWidth);
-      goToSlide(movedCards);
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      const width = getCardWidth();
+      const threshold = width * 0.2;
+      
+      if (deltaX < -threshold) {
+        nextSlide();
+      } else if (deltaX > threshold) {
+        prevSlide();
+      } else {
+        goToSlide(currentIndex);
+      }
     } else {
       goToSlide(currentIndex);
     }
@@ -844,40 +895,33 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     isSwiping = false;
   });
   
-  // ============ KEYBOARD SUPPORT ============
+  /* ============ KEYBOARD SUPPORT ============ */
   slider.setAttribute('tabindex', '0');
   slider.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
-      goToSlide(currentIndex - 1);
+      e.preventDefault();
+      prevSlide();
     } else if (e.key === 'ArrowRight') {
-      goToSlide(currentIndex + 1);
+      e.preventDefault();
+      nextSlide();
     }
   });
   
-  // ============ AUTO UPDATE ON RESIZE ============
+  /* ============ AUTO UPDATE ON RESIZE ============ */
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      const newCardsPerView = getCardsPerView();
-      if (newCardsPerView !== cardsPerView) {
-        cardsPerView = newCardsPerView;
-        maxIndex = Math.max(0, cards.length - cardsPerView);
-        currentIndex = Math.min(currentIndex, maxIndex);
-        generateDots();
-        goToSlide(currentIndex);
-      } else {
-        // Refresh position karena card width mungkin berubah
-        goToSlide(currentIndex);
-      }
+      goToSlide(currentIndex, false);
     }, 150);
   });
   
-  // ============ INIT ============
+  /* ============ INIT ============ */
   generateDots();
-  goToSlide(0);
+  goToSlide(0, false);
+  updateUI();
   
-  console.log('✅ Skills slider initialized');
+  console.log(`✅ Skills slider initialized (${totalCards} cards, infinite loop)`);
 })();
 
 /* ============ CONSOLE ============ */

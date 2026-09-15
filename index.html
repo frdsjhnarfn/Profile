@@ -192,32 +192,30 @@
       </div>
     </section>
 
-        <!-- ============ SKILLS (SLIDER) ============ -->
+            <!-- ============ SKILLS (SLIDER) ============ -->
     <section id="skills" class="section">
       <h2 class="section-title">
         <span class="pixel-border">⚔</span> SKILLS
       </h2>
       
       <div class="skills-slider-wrapper">
-        <!-- Tombol Prev -->
         <button class="slider-btn slider-prev" id="skillsPrev" aria-label="Previous">
           ◀
         </button>
         
-        <!-- Track -->
         <div class="skills-slider" id="skillsSlider">
           <div class="skills-track" id="skillsTrack">
             
             <div class="skill-card">
               <div class="skill-icon">🎨</div>
               <h3>Frontend Dev</h3>
-              <p>HTML5, CSS3, JavaScript, React</p>
+              <p>HTML5, CSS3, JavaScript, React, Tailwind</p>
             </div>
             
             <div class="skill-card">
               <div class="skill-icon">⚙</div>
               <h3>Backend Dev</h3>
-              <p>Node.js, PHP, Python</p>
+              <p>Node.js, PHP, Python, Laravel</p>
             </div>
             
             <div class="skill-card">
@@ -241,7 +239,7 @@
             <div class="skill-card">
               <div class="skill-icon">🎮</div>
               <h3>Game Dev</h3>
-              <p>Unity, Aseprite, Pixel Art</p>
+              <p>Unity, Godot, Aseprite, Pixel Art</p>
             </div>
             
             <div class="skill-card">
@@ -253,23 +251,26 @@
             <div class="skill-card">
               <div class="skill-icon">🎓</div>
               <h3>Accounting Systems</h3>
-              <p>Transaction simulation, Financial records</p>
+              <p>Transaction simulation, financial records</p>
             </div>
 
           </div>
         </div>
         
-        <!-- Tombol Next -->
         <button class="slider-btn slider-next" id="skillsNext" aria-label="Next">
           ▶
         </button>
       </div>
       
+      <!-- Counter -->
+      <div class="slider-counter">
+        <span class="current-num" id="skillCurrent">1</span> / 
+        <span id="skillTotal">8</span>
+      </div>
+      
       <!-- Dot Indicators -->
       <div class="slider-dots" id="skillsDots"></div>
       
-      <!-- Hint -->
-      <p class="slider-hint">&gt; DRAG OR CLICK ARROWS TO EXPLORE</p>
     </section>
 
     <!-- PROJECTS -->
