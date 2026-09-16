@@ -273,89 +273,180 @@
       
     </section>
 
-    <!-- PROJECTS -->
+            <!-- ============ PROJECTS — CLICK TO FLIP & STACK ============ -->
     <section id="projects" class="section">
       <h2 class="section-title">
         <span class="pixel-border">🎮</span> PROJECTS
       </h2>
-      
-      <div class="projects-grid">
-        
-        <!-- VOKA -->
-        <article class="project-card mobile-project">
-          <div class="project-image-portrait">
-            <div class="phone-frame">
-              <div class="phone-notch"></div>
-              <img src="assets/images/voka.png" alt="VOKA"
-                   onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>📢</div>'">
-            </div>
-          </div>
-          <div class="project-info-portrait">
-            <h3>VOKA</h3>
-            <p class="project-tagline">"Speak. Share. Improve."</p>
-            <p>
-              <strong>Voice of Kampus Aspirations</strong> — A mobile-based 
-              Information System (Android) for student aspirations, suggestions, 
-              and complaints, bridging communication between students and the campus.
-            </p>
-            <div class="tags">
-              <span>Android</span>
-              <span>Mobile Dev</span>
-              <span>Information Systems</span>
-            </div>
-          </div>
-        </article>
 
-        <!-- StoreLab -->
-        <article class="project-card mobile-project">
-          <div class="project-image-portrait">
-            <div class="phone-frame">
-              <div class="phone-notch"></div>
-              <img src="assets/images/storelab.png" alt="StoreLab"
-                   onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>🏪</div>'">
-            </div>
-          </div>
-          <div class="project-info-portrait">
-            <h3>StoreLab</h3>
-            <p class="project-tagline">Learn business through interactive simulation</p>
-            <p>
-              An interactive simulation-based accounting learning app. 
-              Users can build virtual stores, manage transactions, and 
-              understand business flows practically.
-            </p>
-            <div class="tags">
-              <span>Accounting</span>
-              <span>Simulation</span>
-              <span>EdTech</span>
-            </div>
-          </div>
-        </article>
+      <p class="projects-hint">&gt; CLICK TO FLIP · CLICK AGAIN TO NEXT</p>
 
-        <!-- NeracaLab -->
-        <article class="project-card mobile-project">
-          <div class="project-image-portrait">
-            <div class="phone-frame">
-              <div class="phone-notch"></div>
-              <img src="assets/images/neracalab.png" alt="NeracaLab"
-                   onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>📊</div>'">
-            </div>
-          </div>
-          <div class="project-info-portrait">
-            <h3>NeracaLab</h3>
-            <p class="project-tagline">"Learn Accounting Through Real Business Simulation."</p>
-            <p>
-              An accounting learning simulation app for students, college students, 
-              and educators. Delivers an interactive learning experience by 
-              simulating real business operations — not just theory.
-            </p>
-            <div class="tags">
-              <span>Accounting</span>
-              <span>Business Simulation</span>
-              <span>EdTech</span>
-            </div>
-          </div>
-        </article>
+      <div class="stack-container">
+        <div class="stack-deck" id="stackDeck">
 
+          <!-- ========== VOKA ========== -->
+          <div class="flip-card" data-project="voka">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <div class="card-badge">01</div>
+                <div class="card-phone">
+                  <div class="phone-notch"></div>
+                  <img src="assets/images/voka.png" alt="VOKA"
+                       onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>📢</div>'">
+                </div>
+                <h3>📢 VOKA</h3>
+                <p class="card-tagline">"Speak. Share. Improve."</p>
+                <div class="tags">
+                  <span>Android</span>
+                  <span>Mobile</span>
+                </div>
+                <div class="click-hint">▼ CLICK TO FLIP ▼</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="card-badge">01</div>
+                <h3>📢 VOKA</h3>
+                <p class="card-subtitle">Voice of Kampus Aspirations</p>
+                <p class="card-desc">
+                  A mobile-based Information System (Android) for student 
+                  aspirations, suggestions, and complaints — bridging 
+                  communication between students and campus.
+                </p>
+                <div class="card-meta">
+                  <div class="meta-item">
+                    <span class="meta-label">PLATFORM</span>
+                    <span class="meta-value">Android</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">ROLE</span>
+                    <span class="meta-value">Full Stack</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">YEAR</span>
+                    <span class="meta-value">2024</span>
+                  </div>
+                </div>
+                <div class="tags">
+                  <span>Android</span>
+                  <span>Mobile Dev</span>
+                  <span>Info Systems</span>
+                </div>
+                <div class="click-hint next-hint">▼ CLICK TO NEXT ▼</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== StoreLab ========== -->
+          <div class="flip-card" data-project="storelab">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <div class="card-badge">02</div>
+                <div class="card-phone">
+                  <div class="phone-notch"></div>
+                  <img src="assets/images/storelab.png" alt="StoreLab"
+                       onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>🏪</div>'">
+                </div>
+                <h3>🏪 StoreLab</h3>
+                <p class="card-tagline">Learn business through simulation</p>
+                <div class="tags">
+                  <span>EdTech</span>
+                  <span>Simulation</span>
+                </div>
+                <div class="click-hint">▼ CLICK TO FLIP ▼</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="card-badge">02</div>
+                <h3>🏪 StoreLab</h3>
+                <p class="card-subtitle">Interactive Business Simulation</p>
+                <p class="card-desc">
+                  An interactive simulation-based accounting learning app. 
+                  Users can build virtual stores, manage transactions, and 
+                  understand business flows practically.
+                </p>
+                <div class="card-meta">
+                  <div class="meta-item">
+                    <span class="meta-label">PLATFORM</span>
+                    <span class="meta-value">Android</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">ROLE</span>
+                    <span class="meta-value">Developer</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">YEAR</span>
+                    <span class="meta-value">2024</span>
+                  </div>
+                </div>
+                <div class="tags">
+                  <span>Accounting</span>
+                  <span>Simulation</span>
+                  <span>EdTech</span>
+                </div>
+                <div class="click-hint next-hint">▼ CLICK TO NEXT ▼</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== NeracaLab ========== -->
+          <div class="flip-card" data-project="neracalab">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <div class="card-badge">03</div>
+                <div class="card-phone">
+                  <div class="phone-notch"></div>
+                  <img src="assets/images/neracalab.png" alt="NeracaLab"
+                       onerror="this.parentElement.innerHTML='<div class=&quot;phone-fallback&quot;>📊</div>'">
+                </div>
+                <h3>📊 NeracaLab</h3>
+                <p class="card-tagline">Real business simulation for accounting</p>
+                <div class="tags">
+                  <span>Accounting</span>
+                  <span>EdTech</span>
+                </div>
+                <div class="click-hint">▼ CLICK TO FLIP ▼</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="card-badge">03</div>
+                <h3>📊 NeracaLab</h3>
+                <p class="card-subtitle">Accounting Learning Simulation</p>
+                <p class="card-desc">
+                  An accounting learning simulation app for students, college 
+                  students, and educators. Delivers an interactive learning 
+                  experience by simulating real business operations.
+                </p>
+                <div class="card-meta">
+                  <div class="meta-item">
+                    <span class="meta-label">PLATFORM</span>
+                    <span class="meta-value">Android</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">ROLE</span>
+                    <span class="meta-value">Developer</span>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">YEAR</span>
+                    <span class="meta-value">2024</span>
+                  </div>
+                </div>
+                <div class="tags">
+                  <span>Accounting</span>
+                  <span>Business Sim</span>
+                  <span>EdTech</span>
+                </div>
+                <div class="click-hint next-hint">▼ CLICK TO NEXT ▼</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Counter -->
+        <div class="stack-counter">
+          <span class="current-num" id="stackCurrent">1</span> / 
+          <span id="stackTotal">3</span>
+        </div>
+
+        <!-- Progress Dots -->
+        <div class="stack-dots" id="stackDots"></div>
       </div>
     </section>
 

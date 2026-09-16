@@ -924,6 +924,230 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   console.log(`✅ Skills slider initialized (${totalCards} cards, infinite loop)`);
 })();
 
+/* ============================================================
+   PROJECTS — CLICK TO FLIP · CLICK AGAIN TO NEXT
+   ============================================================ */
+
+(function initClickFlipStack() {
+  const deck = document.getElementById('stackDeck');
+  if (!deck) return;
+  
+  const cards = Array.from(deck.querySelectorAll('.flip-card'));
+  const totalCards = cards.length;
+  if (totalCards === 0) return;
+  
+  const currentNum = document.getElementById('stackCurrent');
+  const totalNum = document.getElementById('stackTotal');
+  const dotsContainer = document.getElementById('stackDots');
+  
+  if (totalNum) totalNum.textContent = totalCards;
+  
+  let currentIndex = 0;    // card yang di depan
+  let isFlipped = false;   // apakah card depan sedang di-flip
+  let isAnimating = false;
+  
+  // ============ UPDATE POSISI SEMUA CARD ============
+  function updatePositions() {
+    cards.forEach((card, i) => {
+      const pos = (i - currentIndex + totalCards) % totalCards;
+      
+      // Reset class
+      card.classList.remove('stacking-out');
+      
+      if (pos === 0) {
+        card.dataset.pos = 'front';
+      } else if (pos === 1 || pos === totalCards - 1) {
+        card.dataset.pos = 'back-1';
+      } else {
+        card.dataset.pos = 'back-2';
+      }
+    });
+    
+    if (currentNum) currentNum.textContent = currentIndex + 1;
+    updateDots();
+  }
+  
+  // ============ GENERATE DOTS ============
+  function generateDots() {
+    if (!dotsContainer) return;
+    dotsContainer.innerHTML = '';
+    
+    for (let i = 0; i < totalCards; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'stack-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Go to project ${i + 1}`);
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isAnimating) return;
+        jumpToCard(i);
+      });
+      dotsContainer.appendChild(dot);
+    }
+  }
+  
+  function updateDots() {
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll('.stack-dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentIndex);
+    });
+  }
+  
+  // ============ JUMP TO SPECIFIC CARD ============
+  function jumpToCard(index) {
+    if (index === currentIndex) return;
+    isAnimating = true;
+    
+    // Reset flip dulu
+    if (isFlipped) {
+      cards[currentIndex].classList.remove('flipped');
+      isFlipped = false;
+    }
+    
+    // Animasi out dari card depan
+    const frontCard = cards[currentIndex];
+    frontCard.classList.add('stacking-out');
+    
+    setTimeout(() => {
+      frontCard.classList.remove('stacking-out');
+      currentIndex = index;
+      updatePositions();
+      
+      setTimeout(() => {
+        isAnimating = false;
+      }, 500);
+    }, 300);
+  }
+  
+  // ============ NEXT CARD (dengan loop) ============
+  function nextCard() {
+    if (isAnimating) return;
+    isAnimating = true;
+    
+    // Reset flip dulu
+    if (isFlipped) {
+      cards[currentIndex].classList.remove('flipped');
+      isFlipped = false;
+    }
+    
+    const frontCard = cards[currentIndex];
+    
+    // Animasi "terbang" ke belakang
+    frontCard.classList.add('stacking-out');
+    
+    setTimeout(() => {
+      frontCard.classList.remove('stacking-out');
+      currentIndex = (currentIndex + 1) % totalCards;
+      updatePositions();
+      
+      setTimeout(() => {
+        isAnimating = false;
+      }, 500);
+    }, 300);
+  }
+  
+  // ============ CLICK HANDLER UTAMA ============
+  // Logika: klik 1 = flip, klik 2 = next
+  function handleCardClick(card) {
+    if (isAnimating) return;
+    if (card.dataset.pos !== 'front') return;
+    
+    if (!isFlipped) {
+      // Klik pertama → FLIP ke belakang
+      card.classList.add('flipped');
+      isFlipped = true;
+    } else {
+      // Klik kedua → NEXT (card ini pindah ke belakang)
+      nextCard();
+    }
+  }
+  
+  // ============ EVENT LISTENERS ============
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      handleCardClick(card);
+    });
+  });
+  
+  // ============ KEYBOARD SUPPORT ============
+  document.addEventListener('keydown', (e) => {
+    const projectsSection = document.getElementById('projects');
+    if (!projectsSection) return;
+    
+    const rect = projectsSection.getBoundingClientRect();
+    const isVisible = rect.top < window.innerHeight * 0.5 && rect.bottom > 0;
+    if (!isVisible) return;
+    
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextCard();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      // Prev: reset flip dulu, baru mundur
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      if (isFlipped) {
+        cards[currentIndex].classList.remove('flipped');
+        isFlipped = false;
+      }
+      
+      setTimeout(() => {
+        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+        updatePositions();
+        setTimeout(() => { isAnimating = false; }, 400);
+      }, 200);
+    } else if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      handleCardClick(cards[currentIndex]);
+    }
+  });
+  
+  // ============ SWIPE SUPPORT ============
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTime = 0;
+  
+  deck.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+  
+  deck.addEventListener('touchend', (e) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX;
+    const deltaY = e.changedTouches[0].clientY - touchStartY;
+    const duration = Date.now() - touchStartTime;
+    
+    // Swipe kiri (next)
+    if (deltaX < -50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && duration < 500) {
+      nextCard();
+    }
+    // Swipe kanan (prev)
+    else if (deltaX > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && duration < 500) {
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      if (isFlipped) {
+        cards[currentIndex].classList.remove('flipped');
+        isFlipped = false;
+      }
+      
+      setTimeout(() => {
+        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+        updatePositions();
+        setTimeout(() => { isAnimating = false; }, 400);
+      }, 200);
+    }
+  }, { passive: true });
+  
+  // ============ INIT ============
+  generateDots();
+  updatePositions();
+  
+  console.log(`✅ Click-flip-stack initialized (${totalCards} cards)`);
+})();
+
 /* ============ CONSOLE ============ */
 console.log('%c🎮 FIRDAUS J. ARIFIN - 8-BIT PORTFOLIO', 
   'color: #00f5d4; font-size: 20px; font-family: monospace; font-weight: bold;');
