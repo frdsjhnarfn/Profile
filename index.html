@@ -18,6 +18,42 @@
   
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="assets/images/favicon.png">
+
+  <!-- ============ SECURITY META TAGS ============ -->
+
+  <!-- Cegah clickjacking (iframe embed) -->
+  <meta http-equiv="X-Frame-Options" content="DENY">
+
+  <!-- Cegah MIME sniffing -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- Referrer policy -->
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+  <!-- Permissions policy — disable fitur yang tidak dipakai -->
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
+
+  <!-- Cegah autocorrect di form -->
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Force HTTPS (kalau sudah pakai HTTPS di GitHub Pages) -->
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+  <!-- ============ CONTENT SECURITY POLICY ============ -->
+   <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com data:;
+    img-src 'self' data: https:;
+    media-src 'self';
+    connect-src 'self' https://formspree.io;
+    form-action 'self' https://formspree.io;
+    frame-ancestors 'none';
+    base-uri 'self';
+    object-src 'none';
+    upgrade-insecure-requests;
+  ">
 </head>
 <body>
 
@@ -492,16 +528,20 @@
             method="POST">
         <h3>&gt; SEND MESSAGE</h3>
 
+        <!-- ============ TIMESTAMP HONEYPOT ============ -->
+
+        <input type="hidden" name="_timestamp" id="formTimestamp">
+
         <div data-fs-error class="form-error-global"></div>
         <div data-fs-success class="form-success-global">✓ Message sent!</div>
 
-        <input type="text" name="name" placeholder="Name" required data-fs-field>
+        <input type="text" name="name" placeholder="Name" required data-fs-field maxlength="100">
         <span data-fs-error="name" class="form-field-error"></span>
 
-        <input type="email" name="email" placeholder="Email" required data-fs-field>
+        <input type="email" name="email" placeholder="Email" required data-fs-field maxlength="150">
         <span data-fs-error="email" class="form-field-error"></span>
 
-        <textarea name="message" rows="5" placeholder="Message..." required data-fs-field></textarea>
+        <textarea name="message" rows="5" placeholder="Message..." required data-fs-field maxlength="1000"></textarea>
         <span data-fs-error="message" class="form-field-error"></span>
 
         <button type="submit" class="btn btn-primary" data-fs-submit-btn>

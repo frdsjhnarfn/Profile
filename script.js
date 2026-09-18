@@ -1148,6 +1148,93 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   console.log(`✅ Click-flip-stack initialized (${totalCards} cards)`);
 })();
 
+/* ============ FORM RATE LIMITING ============ */
+(function initFormSecurity() {
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+
+  // ============ 1. HONEYPOT CHECK ============
+  form.addEventListener('submit', (e) => {
+    const honeypot = form.querySelector('input[name="_gotcha"]');
+    if (honeypot && honeypot.value.trim() !== '') {
+      e.preventDefault();
+      console.warn('🤖 Bot detected via honeypot');
+      return false;
+    }
+
+    // ============ 2. TIMESTAMP CHECK ============
+    // Manusia butuh minimal 3 detik untuk isi form
+    const timestampField = form.querySelector('#formTimestamp');
+    if (timestampField) {
+      const elapsed = Date.now() - parseInt(timestampField.value || '0', 10);
+      if (elapsed < 3000) {
+        e.preventDefault();
+        alert('⚠️ Form submitted too quickly. Please try again.');
+        return false;
+      }
+    }
+
+    // ============ 3. RATE LIMITING ============
+    const lastSubmit = localStorage.getItem('lastFormSubmit');
+    const now = Date.now();
+    const cooldown = 60 * 1000; // 60 detik
+
+    if (lastSubmit && (now - parseInt(lastSubmit, 10)) < cooldown) {
+      const remaining = Math.ceil((cooldown - (now - parseInt(lastSubmit, 10))) / 1000);
+      e.preventDefault();
+      alert(`⏳ Please wait ${remaining}s before submitting again.`);
+      return false;
+    }
+
+    // Set timestamp submit
+    localStorage.setItem('lastFormSubmit', now.toString());
+
+    // ============ 4. INPUT SANITIZATION ============
+    const name = form.querySelector('input[name="name"]').value;
+    const email = form.querySelector('input[name="email"]').value;
+    const message = form.querySelector('textarea[name="message"]').value;
+
+    // Cek karakter aneh (XSS attempt)
+    const dangerousPattern = /<script|javascript:|onerror=|onclick=|onload=|<iframe|<object|<embed/i;
+    if (dangerousPattern.test(name + email + message)) {
+      e.preventDefault();
+      alert('⚠️ Invalid input detected.');
+      console.warn('🚨 XSS attempt blocked');
+      return false;
+    }
+
+    // Cek email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      e.preventDefault();
+      alert('⚠️ Please enter a valid email.');
+      return false;
+    }
+
+    // Cek panjang
+    if (name.length > 100 || email.length > 150 || message.length > 1000) {
+      e.preventDefault();
+      alert('⚠️ Input too long.');
+      return false;
+    }
+  });
+
+  // Set timestamp saat form pertama di-load
+  const timestampField = form.querySelector('#formTimestamp');
+  if (timestampField) {
+    timestampField.value = Date.now().toString();
+  }
+})();
+
+/* ============ SANITIZE HTML FUNCTION ============ */
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Usage: escapeHTML(userInput) sebelum di-inject ke DOM
+
 /* ============ CONSOLE ============ */
 console.log('%c🎮 FIRDAUS J. ARIFIN - 8-BIT PORTFOLIO', 
   'color: #00f5d4; font-size: 20px; font-family: monospace; font-weight: bold;');

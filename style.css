@@ -1784,3 +1784,18 @@ kbd {
   margin-bottom: 1rem;
   text-align: center;
 }
+
+/* ============ HONEYPOT FIELD (Hidden from Users) ============ */
+.hp-field {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+}
+
+/* PENTING: jangan pakai display:none — bot bisa detect */
