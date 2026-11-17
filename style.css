@@ -60,7 +60,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Pengecualian: input form tetap bisa di-select */
 input,
 textarea,
 [contenteditable="true"] {
@@ -70,7 +69,6 @@ textarea,
   user-select: text;
 }
 
-/* Hilangkan highlight biru saat tap di mobile */
 ::selection {
   background: transparent;
   color: inherit;
@@ -81,7 +79,6 @@ textarea,
   color: inherit;
 }
 
-/* Cegah drag pada gambar */
 img {
   -webkit-user-drag: none;
   -khtml-user-drag: none;
@@ -90,10 +87,10 @@ img {
   pointer-events: none;
 }
 
-/* Kecuali gambar di project card & avatar — tetap klik-able */
 .project-card img,
 .avatar-frame img,
-.phone-frame img {
+.phone-frame img,
+.card-phone img {
   pointer-events: auto;
 }
 
@@ -767,7 +764,6 @@ img {
   padding: 0 1rem;
 }
 
-/* Container slider */
 .skills-slider {
   flex: 1;
   overflow: hidden;
@@ -781,7 +777,6 @@ img {
   cursor: grabbing;
 }
 
-/* Track yang bergeser */
 .skills-track {
   display: flex;
   gap: 0;
@@ -794,7 +789,6 @@ img {
   cursor: grabbing;
 }
 
-/* Card di dalam track — 1 card per view */
 .skill-card {
   flex: 0 0 100%;
   min-width: 100%;
@@ -932,7 +926,7 @@ img {
   font-size: 0.9rem;
 }
 
-/* ============ RESPONSIVE ============ */
+/* ============ RESPONSIVE (SKILLS) ============ */
 @media (max-width: 700px) {
   .skill-card {
     padding: 2.5rem 1.5rem;
@@ -988,6 +982,7 @@ img {
 
 /* ============================================================
    PROJECTS — CLICK TO FLIP & STACK
+   Supports unlimited cards (5+)
    ============================================================ */
 
 .projects-hint {
@@ -1030,10 +1025,9 @@ img {
     z-index 0s;
   transform-style: preserve-3d;
   will-change: transform, opacity;
-  pointer-events: none; /* default: tidak bisa diklik */
+  pointer-events: none;
 }
 
-/* HANYA card depan yang bisa diklik */
 .flip-card[data-pos="front"] {
   pointer-events: auto;
 }
@@ -1059,6 +1053,15 @@ img {
   opacity: 1;
   z-index: 10;
   filter: brightness(1);
+}
+
+/* ============ CARD KE-3+ (HIDDEN DEEP) ============ */
+/* Untuk support >3 card, card ke-3 dst disembunyikan di belakang */
+.flip-card.stack-hidden {
+  transform: translateY(-45px) translateX(22px) scale(0.85) rotate(4.5deg) !important;
+  opacity: 0 !important;
+  filter: brightness(0.4) !important;
+  visibility: hidden;
 }
 
 /* Flip state */
@@ -1378,7 +1381,7 @@ img {
   }
 }
 
-/* ============ RESPONSIVE ============ */
+/* ============ RESPONSIVE (PROJECTS) ============ */
 @media (max-width: 700px) {
   .stack-deck {
     max-width: 340px;
@@ -1423,8 +1426,10 @@ img {
     height: 220px;
   }
   
-  .flip-card-front h3 {
-    font-size: 0.85rem;
+  .flip-card-front h3,
+  .flip-card-back h3 {
+    font-size: 0.8rem;
+    word-break: break-word;
   }
   
   .card-tagline {
@@ -1516,27 +1521,29 @@ img {
   background: var(--bg-card);
   border: 3px solid var(--border);
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .contact-form h3 {
   font-family: var(--font-pixel);
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--accent-2);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
 .contact-form input,
 .contact-form textarea {
-  width: 100%;
-  padding: 1rem;
-  margin-bottom: 1rem;
   background: var(--bg-secondary);
   border: 2px solid var(--border);
   color: var(--text-primary);
+  padding: 0.8rem 1rem;
   font-family: var(--font-mono);
   font-size: 1.1rem;
-  transition: all var(--transition);
+  transition: border-color 0.3s;
+  border-radius: 0;
 }
 
 .contact-form input:focus,
@@ -1551,251 +1558,227 @@ img {
   min-height: 120px;
 }
 
+.contact-form .btn {
+  align-self: center;
+  margin-top: 0.5rem;
+}
+
+.form-error-global,
+.form-field-error {
+  color: var(--accent-3);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.form-field-error {
+  display: block;
+  min-height: 1.2rem;
+  margin-top: -0.5rem;
+}
+
+.form-success-global {
+  display: none;
+  color: #00ff88;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.8rem;
+  border: 2px solid #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+}
+
+.form-success-global.show {
+  display: block;
+}
+
 /* ============ FOOTER ============ */
 .footer {
   background: var(--bg-secondary);
   border-top: 3px solid var(--border);
-  padding: 2rem;
+  padding: 3rem 2rem;
   text-align: center;
+  margin-top: 4rem;
 }
 
 .footer-content p {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   color: var(--text-secondary);
-  font-size: 1rem;
 }
 
-.footer-content p:first-child {
+.footer-hint {
   font-family: var(--font-pixel);
-  font-size: 0.75rem;
-  color: var(--accent-2);
-  margin-bottom: 1rem;
+  font-size: 0.65rem;
+  margin-top: 1.5rem;
+  color: var(--text-secondary);
 }
 
-.footer-hint { font-size: 0.9rem !important; }
-
-kbd {
-  background: var(--bg-card);
-  border: 2px solid var(--accent-1);
-  padding: 2px 6px;
-  border-radius: 4px;
+.footer-hint kbd {
   font-family: var(--font-pixel);
   font-size: 0.6rem;
+  padding: 0.3rem 0.5rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
   color: var(--accent-2);
+  border-radius: 3px;
 }
 
-/* ============ ANIMATIONS ============ */
-.blink { animation: blink 1s infinite; }
-.blink-slow { animation: blink 1.5s infinite; }
+.blink-slow {
+  animation: blinkSlow 3s infinite;
+}
 
-.glitch { position: relative; }
+@keyframes blinkSlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.blink {
+  animation: blink 1.2s infinite;
+}
+
+/* ============ GLITCH EFFECT ============ */
+.glitch {
+  position: relative;
+  font-family: var(--font-pixel);
+}
 
 .glitch::before,
 .glitch::after {
   content: attr(data-text);
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
 }
 
 .glitch::before {
   color: var(--accent-3);
-  animation: glitch1 2s infinite;
-  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  animation: glitch 0.8s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
 }
 
 .glitch::after {
   color: var(--accent-2);
-  animation: glitch2 2s infinite;
-  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  animation: glitch 0.8s infinite reverse;
+  clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%);
 }
 
-@keyframes glitch1 {
+@keyframes glitch {
   0%, 100% { transform: translate(0); }
-  20% { transform: translate(-3px, 2px); }
-  40% { transform: translate(3px, -2px); }
-  60% { transform: translate(-2px, -2px); }
-  80% { transform: translate(2px, 2px); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 1px); }
 }
 
-@keyframes glitch2 {
-  0%, 100% { transform: translate(0); }
-  20% { transform: translate(3px, -2px); }
-  40% { transform: translate(-3px, 2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(-2px, -2px); }
-}
-
-/* ============ PARTICLE STYLES ============ */
-.fireball-projectile {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9998;
-}
-
+/* ============ EMBER PARTICLES ============ */
 .ember-particle {
   position: fixed;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 9997;
+  z-index: 9996;
+  transform: translate(-50%, -50%);
 }
 
-.screen-shake {
-  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-}
-
-@keyframes shake {
-  10%, 90% { transform: translate3d(-2px, 0, 0); }
-  20%, 80% { transform: translate3d(4px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-  40%, 60% { transform: translate3d(6px, 0, 0); }
-}
-
-/* ============ RESPONSIVE ============ */
+/* ============ MOBILE HAMBURGER ============ */
 @media (max-width: 900px) {
-  .hero-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 2rem;
-  }
-  
-  .hero-avatar { order: -1; }
-  .hero-buttons { justify-content: center; }
-  .hero-stats { justify-content: center; }
-  
-  .avatar-frame { width: 240px; height: 240px; }
-  .pet-mage { width: 80px; height: 80px; bottom: -5px; right: -15px; }
-  .avatar-platform { width: 180px; }
-  
-  .project-card.mobile-project {
-    grid-template-columns: 200px 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-  }
-  
-  .phone-frame {
-    width: 160px;
-    height: 300px;
-  }
-  
   .nav-menu {
     position: fixed;
-    top: 70px; right: -100%;
-    width: 80%;
-    max-width: 300px;
+    top: 70px;
+    right: -100%;
+    width: 250px;
     height: calc(100vh - 70px);
     flex-direction: column;
     background: var(--bg-secondary);
-    padding: 2rem;
     border-left: 3px solid var(--border);
-    transition: right 0.3s;
+    padding: 2rem;
     gap: 1.5rem;
+    transition: right 0.3s ease;
+    z-index: 999;
   }
   
-  .nav-menu.active { right: 0; }
-  .hamburger { display: flex; }
+  .nav-menu.active {
+    right: 0;
+  }
+  
+  .hamburger {
+    display: flex;
+  }
   
   .hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
+    transform: translateY(8px) rotate(45deg);
   }
-  .hamburger.active span:nth-child(2) { opacity: 0; }
+  
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  
   .hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
+    transform: translateY(-8px) rotate(-45deg);
   }
-}
-
-@media (max-width: 700px) {
-  .project-card.mobile-project {
+  
+  .hero-content {
     grid-template-columns: 1fr;
+    gap: 2rem;
     text-align: center;
-    padding: 2rem 1.5rem;
-    gap: 1.5rem;
   }
   
-  .project-card.mobile-project::before { display: none; }
-  
-  .phone-frame {
-    width: 160px;
-    height: 300px;
-    margin: 0 auto;
+  .hero-buttons {
+    justify-content: center;
   }
   
-  .project-info-portrait { align-items: center; }
-  .project-info-portrait .project-tagline { text-align: center; }
-  .project-info-portrait .tags { justify-content: center; }
+  .hero-stats {
+    justify-content: center;
+  }
+  
+  .hero-avatar {
+    order: -1;
+  }
+  
+  .avatar-frame {
+    width: 220px;
+    height: 220px;
+  }
+  
+  .pet-mage {
+    width: 80px;
+    height: 80px;
+    right: -10px;
+  }
 }
 
 @media (max-width: 500px) {
-  body { font-size: 16px; }
-  .section { padding: 4rem 1rem; }
-  .nav-container { padding: 0.8rem 1rem; }
-  .logo { font-size: 0.8rem; }
-  .btn { font-size: 0.65rem; padding: 0.8rem 1rem; }
-  .hero-stats { gap: 1.5rem; }
-  .stat-num { font-size: 1.2rem; }
+  .avatar-frame {
+    width: 180px;
+    height: 180px;
+  }
   
-  .avatar-frame { width: 200px; height: 200px; }
-  .pet-mage { width: 70px; height: 70px; bottom: 0; right: -10px; }
-  .avatar-platform { width: 150px; }
+  .pet-mage {
+    width: 70px;
+    height: 70px;
+  }
   
-  .pet-score {
-    top: -35px;
-    font-size: 0.55rem;
-    padding: 0.4rem 0.7rem;
+  .logo {
+    font-size: 0.75rem;
+  }
+  
+  .section {
+    padding: 4rem 1rem;
+  }
+  
+  .btn {
+    font-size: 0.65rem;
+    padding: 0.8rem 1.2rem;
   }
 }
 
-@media (hover: none) {
-  .cursor { display: none; }
-  body { cursor: auto; }
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
-
-/* ============ FORMSPREE MESSAGES ============ */
-.form-field-error {
-  display: block;
-  color: #ff006e;
-  font-size: 0.9rem;
-  margin-top: -0.8rem;
-  margin-bottom: 1rem;
-  min-height: 1.2rem;
-}
-
-.form-error-global {
-  color: #ff006e;
-  font-family: var(--font-pixel);
-  font-size: 0.7rem;
-  padding: 1rem;
-  border: 2px solid #ff006e;
-  background: rgba(255, 0, 110, 0.1);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.form-success-global {
-  display: none; /* Akan dimunculkan oleh Formspree */
-  color: #00f5d4;
-  font-family: var(--font-pixel);
-  font-size: 0.7rem;
-  padding: 1rem;
-  border: 2px solid #00f5d4;
-  background: rgba(0, 245, 212, 0.1);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-/* ============ HONEYPOT FIELD (Hidden from Users) ============ */
-.hp-field {
-  position: absolute !important;
-  left: -9999px !important;
-  top: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  z-index: -9999 !important;
-}
-
-/* PENTING: jangan pakai display:none — bot bisa detect */

@@ -239,7 +239,7 @@ if (soundToggle && bgm) {
   };
   formspree('initForm', {
     formElement: '#contactForm',
-    formId: 'mwlkybkz' // ⚠️ Replace with YOUR Form ID
+    formId: 'mwlkybkz'
   });
 })();
 
@@ -680,15 +680,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   let currentIndex = 0;
   let isAnimating = false;
   
-  // Set total counter
   if (totalNum) totalNum.textContent = totalCards;
   
-  // Hitung lebar 1 card (full width slider)
   function getCardWidth() {
     return slider.offsetWidth;
   }
   
-  // Update counter dan dots
   function updateUI() {
     if (currentNum) currentNum.textContent = currentIndex + 1;
     
@@ -700,7 +697,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   }
   
-  // Geser ke index tertentu (dengan animasi)
   function goToSlide(index, animate = true) {
     if (isAnimating && animate) return;
     
@@ -723,14 +719,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   }
   
-  // Next slide (dengan infinite loop)
   function nextSlide() {
     if (isAnimating) return;
     
     currentIndex++;
     
     if (currentIndex >= totalCards) {
-      // Loop ke awal
       currentIndex = 0;
     }
     
@@ -738,14 +732,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     updateUI();
   }
   
-  // Prev slide (dengan infinite loop)
   function prevSlide() {
     if (isAnimating) return;
     
     currentIndex--;
     
     if (currentIndex < 0) {
-      // Loop ke akhir
       currentIndex = totalCards - 1;
     }
     
@@ -753,7 +745,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     updateUI();
   }
   
-  // Generate dots
   function generateDots() {
     if (!dotsContainer) return;
     dotsContainer.innerHTML = '';
@@ -772,7 +763,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   }
   
-  // Button handlers
   if (prevBtn) prevBtn.addEventListener('click', prevSlide);
   if (nextBtn) nextBtn.addEventListener('click', nextSlide);
   
@@ -789,7 +779,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     return matrix.m41;
   }
   
-  // Mouse down
   slider.addEventListener('mousedown', (e) => {
     if (isAnimating) return;
     isDragging = true;
@@ -800,7 +789,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     slider.style.cursor = 'grabbing';
   });
   
-  // Mouse move
   window.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     e.preventDefault();
@@ -810,7 +798,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     track.style.transform = `translateX(${currentTranslate}px)`;
   });
   
-  // Mouse up
   window.addEventListener('mouseup', (e) => {
     if (!isDragging) return;
     isDragging = false;
@@ -818,23 +805,19 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     slider.style.cursor = 'grab';
     
     const width = getCardWidth();
-    const threshold = width * 0.2; // 20% threshold untuk swipe
+    const threshold = width * 0.2;
     
     if (movedDistance > 5) {
       const walk = e.pageX - startX;
       
       if (walk < -threshold) {
-        // Swipe kiri → next
         nextSlide();
       } else if (walk > threshold) {
-        // Swipe kanan → prev
         prevSlide();
       } else {
-        // Tidak cukup jauh → snap balik
         goToSlide(currentIndex);
       }
     } else {
-      // Cuma klik → snap balik
       goToSlide(currentIndex);
     }
   });
@@ -860,7 +843,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     const deltaX = e.touches[0].clientX - touchStartX;
     const deltaY = e.touches[0].clientY - touchStartY;
     
-    // Deteksi arah swipe
     if (!isSwiping && (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10)) {
       isSwiping = Math.abs(deltaX) > Math.abs(deltaY);
     }
@@ -926,6 +908,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 /* ============================================================
    PROJECTS — CLICK TO FLIP · CLICK AGAIN TO NEXT
+   Supports unlimited cards (5+)
    ============================================================ */
 
 (function initClickFlipStack() {
@@ -942,24 +925,36 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   
   if (totalNum) totalNum.textContent = totalCards;
   
-  let currentIndex = 0;    // card yang di depan
-  let isFlipped = false;   // apakah card depan sedang di-flip
+  let currentIndex = 0;
+  let isFlipped = false;
   let isAnimating = false;
   
-  // ============ UPDATE POSISI SEMUA CARD ============
+  /* ============ UPDATE POSISI SEMUA CARD ============ */
+  /* Mendukung >3 card: pos 0 = front, 1 = back-1, 2 = back-2, 3+ = hidden */
   function updatePositions() {
     cards.forEach((card, i) => {
       const pos = (i - currentIndex + totalCards) % totalCards;
       
-      // Reset class
       card.classList.remove('stacking-out');
+      card.classList.remove('stack-hidden');
+      
+      // Reset inline style dulu
+      card.style.zIndex = '';
+      card.style.opacity = '';
       
       if (pos === 0) {
         card.dataset.pos = 'front';
-      } else if (pos === 1 || pos === totalCards - 1) {
+      } else if (pos === 1) {
         card.dataset.pos = 'back-1';
-      } else {
+      } else if (pos === 2) {
         card.dataset.pos = 'back-2';
+      } else {
+        // Card ke-3 dst: tetap di back-2 secara class tapi disembunyikan
+        card.dataset.pos = 'back-2';
+        card.classList.add('stack-hidden');
+        card.style.zIndex = String(Math.max(1, 5 - pos));
+        card.style.opacity = '0';
+        card.style.pointerEvents = 'none';
       }
     });
     
@@ -967,7 +962,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     updateDots();
   }
   
-  // ============ GENERATE DOTS ============
+  /* ============ GENERATE DOTS ============ */
   function generateDots() {
     if (!dotsContainer) return;
     dotsContainer.innerHTML = '';
@@ -993,18 +988,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
   }
   
-  // ============ JUMP TO SPECIFIC CARD ============
+  /* ============ JUMP TO SPECIFIC CARD ============ */
   function jumpToCard(index) {
     if (index === currentIndex) return;
     isAnimating = true;
     
-    // Reset flip dulu
     if (isFlipped) {
       cards[currentIndex].classList.remove('flipped');
       isFlipped = false;
     }
     
-    // Animasi out dari card depan
     const frontCard = cards[currentIndex];
     frontCard.classList.add('stacking-out');
     
@@ -1019,20 +1012,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }, 300);
   }
   
-  // ============ NEXT CARD (dengan loop) ============
+  /* ============ NEXT CARD (dengan loop) ============ */
   function nextCard() {
     if (isAnimating) return;
     isAnimating = true;
     
-    // Reset flip dulu
     if (isFlipped) {
       cards[currentIndex].classList.remove('flipped');
       isFlipped = false;
     }
     
     const frontCard = cards[currentIndex];
-    
-    // Animasi "terbang" ke belakang
     frontCard.classList.add('stacking-out');
     
     setTimeout(() => {
@@ -1046,30 +1036,44 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }, 300);
   }
   
-  // ============ CLICK HANDLER UTAMA ============
-  // Logika: klik 1 = flip, klik 2 = next
+  /* ============ PREV CARD ============ */
+  function prevCard() {
+    if (isAnimating) return;
+    isAnimating = true;
+    
+    if (isFlipped) {
+      cards[currentIndex].classList.remove('flipped');
+      isFlipped = false;
+    }
+    
+    setTimeout(() => {
+      currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+      updatePositions();
+      setTimeout(() => { isAnimating = false; }, 400);
+    }, 200);
+  }
+  
+  /* ============ CLICK HANDLER UTAMA ============ */
   function handleCardClick(card) {
     if (isAnimating) return;
     if (card.dataset.pos !== 'front') return;
     
     if (!isFlipped) {
-      // Klik pertama → FLIP ke belakang
       card.classList.add('flipped');
       isFlipped = true;
     } else {
-      // Klik kedua → NEXT (card ini pindah ke belakang)
       nextCard();
     }
   }
   
-  // ============ EVENT LISTENERS ============
+  /* ============ EVENT LISTENERS ============ */
   cards.forEach(card => {
     card.addEventListener('click', () => {
       handleCardClick(card);
     });
   });
   
-  // ============ KEYBOARD SUPPORT ============
+  /* ============ KEYBOARD SUPPORT ============ */
   document.addEventListener('keydown', (e) => {
     const projectsSection = document.getElementById('projects');
     if (!projectsSection) return;
@@ -1083,27 +1087,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       nextCard();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      // Prev: reset flip dulu, baru mundur
-      if (isAnimating) return;
-      isAnimating = true;
-      
-      if (isFlipped) {
-        cards[currentIndex].classList.remove('flipped');
-        isFlipped = false;
-      }
-      
-      setTimeout(() => {
-        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-        updatePositions();
-        setTimeout(() => { isAnimating = false; }, 400);
-      }, 200);
+      prevCard();
     } else if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       handleCardClick(cards[currentIndex]);
     }
   });
   
-  // ============ SWIPE SUPPORT ============
+  /* ============ SWIPE SUPPORT ============ */
   let touchStartX = 0;
   let touchStartY = 0;
   let touchStartTime = 0;
@@ -1119,29 +1110,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     const deltaY = e.changedTouches[0].clientY - touchStartY;
     const duration = Date.now() - touchStartTime;
     
-    // Swipe kiri (next)
     if (deltaX < -50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && duration < 500) {
       nextCard();
-    }
-    // Swipe kanan (prev)
-    else if (deltaX > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && duration < 500) {
-      if (isAnimating) return;
-      isAnimating = true;
-      
-      if (isFlipped) {
-        cards[currentIndex].classList.remove('flipped');
-        isFlipped = false;
-      }
-      
-      setTimeout(() => {
-        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-        updatePositions();
-        setTimeout(() => { isAnimating = false; }, 400);
-      }, 200);
+    } else if (deltaX > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && duration < 500) {
+      prevCard();
     }
   }, { passive: true });
   
-  // ============ INIT ============
+  /* ============ INIT ============ */
   generateDots();
   updatePositions();
   
@@ -1153,7 +1129,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   const form = document.getElementById('contactForm');
   if (!form) return;
 
-  // ============ 1. HONEYPOT CHECK ============
   form.addEventListener('submit', (e) => {
     const honeypot = form.querySelector('input[name="_gotcha"]');
     if (honeypot && honeypot.value.trim() !== '') {
@@ -1162,8 +1137,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       return false;
     }
 
-    // ============ 2. TIMESTAMP CHECK ============
-    // Manusia butuh minimal 3 detik untuk isi form
     const timestampField = form.querySelector('#formTimestamp');
     if (timestampField) {
       const elapsed = Date.now() - parseInt(timestampField.value || '0', 10);
@@ -1174,10 +1147,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       }
     }
 
-    // ============ 3. RATE LIMITING ============
     const lastSubmit = localStorage.getItem('lastFormSubmit');
     const now = Date.now();
-    const cooldown = 60 * 1000; // 60 detik
+    const cooldown = 60 * 1000;
 
     if (lastSubmit && (now - parseInt(lastSubmit, 10)) < cooldown) {
       const remaining = Math.ceil((cooldown - (now - parseInt(lastSubmit, 10))) / 1000);
@@ -1186,15 +1158,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       return false;
     }
 
-    // Set timestamp submit
     localStorage.setItem('lastFormSubmit', now.toString());
 
-    // ============ 4. INPUT SANITIZATION ============
     const name = form.querySelector('input[name="name"]').value;
     const email = form.querySelector('input[name="email"]').value;
     const message = form.querySelector('textarea[name="message"]').value;
 
-    // Cek karakter aneh (XSS attempt)
     const dangerousPattern = /<script|javascript:|onerror=|onclick=|onload=|<iframe|<object|<embed/i;
     if (dangerousPattern.test(name + email + message)) {
       e.preventDefault();
@@ -1203,7 +1172,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       return false;
     }
 
-    // Cek email format
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       e.preventDefault();
@@ -1211,7 +1179,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       return false;
     }
 
-    // Cek panjang
     if (name.length > 100 || email.length > 150 || message.length > 1000) {
       e.preventDefault();
       alert('⚠️ Input too long.');
@@ -1219,7 +1186,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   });
 
-  // Set timestamp saat form pertama di-load
   const timestampField = form.querySelector('#formTimestamp');
   if (timestampField) {
     timestampField.value = Date.now().toString();
@@ -1232,8 +1198,6 @@ function escapeHTML(str) {
   div.textContent = str;
   return div.innerHTML;
 }
-
-// Usage: escapeHTML(userInput) sebelum di-inject ke DOM
 
 /* ============ CONSOLE ============ */
 console.log('%c🎮 FIRDAUS J. ARIFIN - 8-BIT PORTFOLIO', 
