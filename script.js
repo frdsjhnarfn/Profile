@@ -908,7 +908,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 /* ============================================================
    PROJECTS — CLICK TO FLIP · CLICK AGAIN TO NEXT
-   Supports unlimited cards (5+)
+   Supports unlimited cards (5+) — semua card terlihat sebagai stack
    ============================================================ */
 
 (function initClickFlipStack() {
@@ -930,17 +930,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   let isAnimating = false;
   
   /* ============ UPDATE POSISI SEMUA CARD ============ */
-  /* Mendukung >3 card: pos 0 = front, 1 = back-1, 2 = back-2, 3+ = hidden */
+  /* Semua card tetap terlihat sebagai stack bertingkat */
   function updatePositions() {
     cards.forEach((card, i) => {
       const pos = (i - currentIndex + totalCards) % totalCards;
       
       card.classList.remove('stacking-out');
-      card.classList.remove('stack-hidden');
       
-      // Reset inline style dulu
+      // Reset inline style
       card.style.zIndex = '';
       card.style.opacity = '';
+      card.style.pointerEvents = '';
       
       if (pos === 0) {
         card.dataset.pos = 'front';
@@ -949,12 +949,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       } else if (pos === 2) {
         card.dataset.pos = 'back-2';
       } else {
-        // Card ke-3 dst: tetap di back-2 secara class tapi disembunyikan
-        card.dataset.pos = 'back-2';
-        card.classList.add('stack-hidden');
+        // Card ke-3 dst: stack paling belakang, tetap terlihat
+        card.dataset.pos = 'back-3';
         card.style.zIndex = String(Math.max(1, 5 - pos));
-        card.style.opacity = '0';
-        card.style.pointerEvents = 'none';
       }
     });
     

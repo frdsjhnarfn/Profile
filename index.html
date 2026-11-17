@@ -20,27 +20,15 @@
   <link rel="icon" type="image/png" href="assets/images/favicon.png">
 
   <!-- ============ SECURITY META TAGS ============ -->
-
-  <!-- Cegah clickjacking (iframe embed) -->
   <meta http-equiv="X-Frame-Options" content="DENY">
-
-  <!-- Cegah MIME sniffing -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
-
-  <!-- Referrer policy -->
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-
-  <!-- Permissions policy — disable fitur yang tidak dipakai -->
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
-
-  <!-- Cegah autocorrect di form -->
   <meta name="format-detection" content="telephone=no">
-
-  <!-- Force HTTPS (kalau sudah pakai HTTPS di GitHub Pages) -->
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
   <!-- ============ CONTENT SECURITY POLICY ============ -->
-   <meta http-equiv="Content-Security-Policy" content="
+  <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
@@ -124,7 +112,7 @@
               <span class="stat-label">Semester</span>
             </div>
             <div class="stat">
-              <span class="stat-num" data-count="3">0</span>+
+              <span class="stat-num" data-count="5">0</span>+
               <span class="stat-label">Projects</span>
             </div>
             <div class="stat">
@@ -228,7 +216,7 @@
       </div>
     </section>
 
-            <!-- ============ SKILLS (SLIDER) ============ -->
+    <!-- ============ SKILLS (SLIDER) ============ -->
     <section id="skills" class="section">
       <h2 class="section-title">
         <span class="pixel-border">⚔</span> SKILLS
@@ -309,7 +297,7 @@
       
     </section>
 
-            <!-- ============ PROJECTS — CLICK TO FLIP & STACK ============ -->
+    <!-- ============ PROJECTS — CLICK TO FLIP & STACK ============ -->
     <section id="projects" class="section">
       <h2 class="section-title">
         <span class="pixel-border">🎮</span> PROJECTS
@@ -472,7 +460,8 @@
               </div>
             </div>
           </div>
-                    <!-- ========== Casync ========== -->
+
+          <!-- ========== Casync ========== -->
           <div class="flip-card" data-project="casync">
             <div class="flip-card-inner">
               <div class="flip-card-front">
@@ -574,12 +563,13 @@
               </div>
             </div>
           </div>
+
         </div>
 
         <!-- Counter -->
         <div class="stack-counter">
           <span class="current-num" id="stackCurrent">1</span> / 
-          <span id="stackTotal">3</span>
+          <span id="stackTotal">5</span>
         </div>
 
         <!-- Progress Dots -->
@@ -628,8 +618,6 @@
             action="https://formspree.io/f/mwlkybkz" 
             method="POST">
         <h3>&gt; SEND MESSAGE</h3>
-
-        <!-- ============ TIMESTAMP HONEYPOT ============ -->
 
         <input type="hidden" name="_timestamp" id="formTimestamp">
 
